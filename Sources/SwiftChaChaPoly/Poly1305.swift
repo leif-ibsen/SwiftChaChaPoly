@@ -95,11 +95,11 @@ class Poly1305 {
     var h1: Limb
     var h2: Limb
 
-    init(_ r0: Limb, _ r1: Limb, _ s0: Limb, _ s1: Limb) {
-        self.r0 = r0
-        self.r1 = r1
-        self.s0 = s0
-        self.s1 = s1
+    init(_ key: (r0: Limb, r1: Limb, s0: Limb, s1: Limb)) {
+        self.r0 = key.r0
+        self.r1 = key.r1
+        self.s0 = key.s0
+        self.s1 = key.s1
         self.h0 = 0
         self.h1 = 0
         self.h2 = 0
@@ -164,7 +164,6 @@ class Poly1305 {
     }
 
     func doBlock(_ b0: Limb, _ b1: Limb, _ lastBlock: Bool) {
-
         var carry: Bool
         (self.h0, carry) = Poly1305.add(self.h0, b0)
         (self.h1, carry) = Poly1305.add(self.h1, b1, carry)

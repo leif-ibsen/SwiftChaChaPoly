@@ -26,32 +26,26 @@ struct ChaCha20 {
     let state9: Word
     let state10: Word
     let state11: Word
-    let state12: Word
     let state13: Word
     let state14: Word
     let state15: Word
-    let key: Bytes
-    let nonce: Bytes
 
     init(_ key: Bytes, _ nonce: Bytes) {
-        self.key = key
-        self.nonce = nonce
         self.state0 = 0x61707865
         self.state1 = 0x3320646e
         self.state2 = 0x79622d32
         self.state3 = 0x6b206574
-        self.state4 = ChaCha20.wordFromBytes(self.key, 0)
-        self.state5 = ChaCha20.wordFromBytes(self.key, 4)
-        self.state6 = ChaCha20.wordFromBytes(self.key, 8)
-        self.state7 = ChaCha20.wordFromBytes(self.key, 12)
-        self.state8 = ChaCha20.wordFromBytes(self.key, 16)
-        self.state9 = ChaCha20.wordFromBytes(self.key, 20)
-        self.state10 = ChaCha20.wordFromBytes(self.key, 24)
-        self.state11 = ChaCha20.wordFromBytes(self.key, 28)
-        self.state12 = 0
-        self.state13 = ChaCha20.wordFromBytes(self.nonce, 0)
-        self.state14 = ChaCha20.wordFromBytes(self.nonce, 4)
-        self.state15 = ChaCha20.wordFromBytes(self.nonce, 08)
+        self.state4 = ChaCha20.wordFromBytes(key, 0)
+        self.state5 = ChaCha20.wordFromBytes(key, 4)
+        self.state6 = ChaCha20.wordFromBytes(key, 8)
+        self.state7 = ChaCha20.wordFromBytes(key, 12)
+        self.state8 = ChaCha20.wordFromBytes(key, 16)
+        self.state9 = ChaCha20.wordFromBytes(key, 20)
+        self.state10 = ChaCha20.wordFromBytes(key, 24)
+        self.state11 = ChaCha20.wordFromBytes(key, 28)
+        self.state13 = ChaCha20.wordFromBytes(nonce, 0)
+        self.state14 = ChaCha20.wordFromBytes(nonce, 4)
+        self.state15 = ChaCha20.wordFromBytes(nonce, 08)
     }
 
     // [RFC-7539] section 2.3

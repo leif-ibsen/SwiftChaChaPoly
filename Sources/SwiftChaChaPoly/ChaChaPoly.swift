@@ -48,10 +48,7 @@ public struct ChaChaPoly {
     ///   - aad: The additional authenticated data - possibly 0 bytes
     /// - Returns: The tag computed from *plaintext* and *aad* - a 16 byte value
     public func encrypt(_ plaintext: inout Bytes, _ aad: Bytes = []) -> Bytes {
-        let (r0, r1, s0, s1) = makePolyKey()
-        let poly = Poly1305(r0, r1, s0, s1)
-        
-        let chacha = ChaCha20(key, nonce)
+        let chacha = ChaCha20(self.key, self.nonce)
         chacha.encrypt(&plaintext)
         var aead = Bytes(repeating: 0, count: 16 * ((aad.count + 15) / 16) + 16 * ((plaintext.count + 15) / 16) + 16)
         for i in 0 ..< aad.count {
@@ -64,7 +61,7 @@ public struct ChaChaPoly {
         let m = 16 * ((plaintext.count + 15) / 16)
         int2bytes(aad.count, &aead, n + m)
         int2bytes(plaintext.count, &aead, n + m + 8)
-        return poly.computeTag(aead)
+        return Poly1305(makePolyKey()).computeTag(aead)
     }
 
     /// Decrypts a byte array and verifies the tag
@@ -75,25 +72,19 @@ public struct ChaChaPoly {
     ///   - aad: The additional authenticated data - possibly 0 bytes
     /// - Returns: *true* iff *tag* is verified
     public func decrypt(_ ciphertext: inout Bytes, _ tag: Bytes, _ aad: Bytes = []) -> Bool {
-        if tag.count != 16 {
-            return false
-        }
-        let (r0, r1, s0, s1) = makePolyKey()
-        let poly = Poly1305(r0, r1, s0, s1)
-
-        var aead = Bytes(repeating: 0, count: 16 * ((aad.count + 15) / 16) + 16 * ((ciphertext.count + 15) / 16) + 16)
+        let n = 16 * ((aad.count + 15) / 16)
+        let m = 16 * ((ciphertext.count + 15) / 16)
+        var aead = Bytes(repeating: 0, count: n + m + 16)
         for i in 0 ..< aad.count {
             aead[i] = aad[i]
         }
-        let n = 16 * ((aad.count + 15) / 16)
         for i in 0 ..< ciphertext.count {
             aead[n + i] = ciphertext[i]
         }
-        let m = 16 * ((ciphertext.count + 15) / 16)
         int2bytes(aad.count, &aead, n + m)
         int2bytes(ciphertext.count, &aead, n + m + 8)
-        if poly.computeTag(aead) == tag {
-            let chacha = ChaCha20(key, nonce)
+        if Poly1305(makePolyKey()).computeTag(aead) == tag {
+            let chacha = ChaCha20(self.key, self.nonce)
             chacha.encrypt(&ciphertext)
             return true
         }

@@ -7,7 +7,7 @@ It is based on ChaCha20 encryption and Poly1305 authentication as defined in [RF
 In your project Package.swift file add a dependency like<br/>
 
 	  dependencies: [
-	  .package(url: "https://github.com/leif-ibsen/SwiftChaChaPoly", from: "1.0.0"),
+	  .package(url: "https://github.com/leif-ibsen/SwiftChaChaPoly", from: "1.0.1"),
 	  ]
 
 <h2><b>Example</b></h2>
