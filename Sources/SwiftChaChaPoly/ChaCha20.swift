@@ -45,7 +45,7 @@ struct ChaCha20 {
         self.state11 = ChaCha20.wordFromBytes(key, 28)
         self.state13 = ChaCha20.wordFromBytes(nonce, 0)
         self.state14 = ChaCha20.wordFromBytes(nonce, 4)
-        self.state15 = ChaCha20.wordFromBytes(nonce, 08)
+        self.state15 = ChaCha20.wordFromBytes(nonce, 8)
     }
 
     // [RFC-7539] section 2.3

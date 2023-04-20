@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import SwiftChaChaPoly
 
 class Test1: XCTestCase {
 
@@ -173,4 +174,17 @@ class Test1: XCTestCase {
         XCTAssertEqual(t4, plainText4)
     }
 
+    func test5() {
+        let key = Bytes(repeating: 17, count: 32)
+        let nonce = Bytes(repeating: 5, count: 12)
+        for i in 0 ..< 70 {
+            let text = Bytes(repeating: 10, count: i)
+            var x = text
+            let chacha = ChaChaPoly(key, nonce)
+            let tag = chacha.encrypt(&x)
+            let ok = chacha.decrypt(&x, tag)
+            XCTAssertTrue(ok)
+            XCTAssertEqual(x, text)
+        }
+    }
 }

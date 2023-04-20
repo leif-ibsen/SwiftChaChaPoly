@@ -128,8 +128,10 @@ class Poly1305 {
             for i in (0 ..< min(8, remaining)).reversed() {
                 b0 = b0 << 8 | Limb(text[index + i])
             }
-            for i in (8 ..< min(16, remaining)).reversed() {
-                b1 = b1 << 8 | Limb(text[index + i])
+            if remaining >= 8 {
+                for i in (8 ..< min(16, remaining)).reversed() {
+                    b1 = b1 << 8 | Limb(text[index + i])
+                }
             }
             if remaining < 8 {
                 b0 |= 1 << (8 * remaining)
