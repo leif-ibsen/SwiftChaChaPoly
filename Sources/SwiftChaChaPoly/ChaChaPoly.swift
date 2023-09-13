@@ -15,6 +15,29 @@ public typealias Bytes = [UInt8]
 ///
 public struct ChaChaPoly {
     
+    // MARK: Exceptions
+
+    ///
+    /// Exceptions
+    ///
+    public enum Ex: Error, CustomStringConvertible {
+        
+        /// Textual description of *self*
+        public var description: String {
+            switch self {
+            case .keySize:
+                return "Wrong key size - must be 32"
+            case .nonceSize:
+                return "Wrong nonce size - must be 12"
+            }
+        }
+
+        /// Wrong key size - must be 32
+        case keySize
+        /// Wrong nonce size - must be 12
+        case nonceSize
+    }
+
     // MARK: Stored Properties
     
     /// The key - a 32 byte value
@@ -31,9 +54,14 @@ public struct ChaChaPoly {
     /// - Parameters:
     ///   - key: The key - a 32 byte value
     ///   - nonce: The nonce - a 12 byte value
-    public init(_ key: Bytes, _ nonce: Bytes) {
-        precondition(key.count == 32)
-        precondition(nonce.count == 12)
+    /// - Throws: An exception if the key or nonce has wrong size
+    public init(_ key: Bytes, _ nonce: Bytes) throws {
+        guard key.count == 32 else {
+            throw Ex.keySize
+        }
+        guard nonce.count == 12 else {
+            throw Ex.nonceSize
+        }
         self.key = key
         self.nonce = nonce
     }

@@ -8,9 +8,8 @@
 import XCTest
 @testable import SwiftChaChaPoly
 
-class Test1: XCTestCase {
-
-    // Test vectors from RFC7539
+// Test vectors from RFC8439
+class TestRFC8439: XCTestCase {
     
     let key1: Bytes = [
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -74,18 +73,18 @@ class Test1: XCTestCase {
         0x3f, 0xf4, 0xde, 0xf0, 0x8e, 0x4b, 0x7a, 0x9d, 0xe5, 0x76, 0xd2, 0x65, 0x86, 0xce, 0xc6, 0x4b,
         0x61, 0x16]
 
-    func test1() {
+    func test1() throws {
         var t1 = plainText1
-        let aead = ChaChaPoly(key1, nonce1)
+        let aead = try ChaChaPoly(key1, nonce1)
         let tag = aead.encrypt(&t1, aad1)
         XCTAssertEqual(t1, cipherText1)
         XCTAssert(aead.decrypt(&t1, tag))
         XCTAssertEqual(t1, plainText1)
     }
     
-    func test2() {
+    func test2() throws {
         var t2 = plainText2
-        let aead = ChaChaPoly(key2, nonce2)
+        let aead = try ChaChaPoly(key2, nonce2)
         let tag = aead.encrypt(&t2, aad2)
         XCTAssertEqual(t2, cipherText2)
         XCTAssertEqual(tag, tag2)
@@ -108,9 +107,9 @@ class Test1: XCTestCase {
     let cipherText3: Bytes = [
         0x5d, 0x9c, 0x0a, 0x9f, 0xe7, 0xd5, 0xe5]
 
-    func test3() {
+    func test3() throws {
         var t3 = plainText3
-        let aead = ChaChaPoly(key3, nonce3)
+        let aead = try ChaChaPoly(key3, nonce3)
         let tag = aead.encrypt(&t3, aad3)
         XCTAssertEqual(t3, cipherText3)
         XCTAssertEqual(tag, tag3)
@@ -164,9 +163,9 @@ class Test1: XCTestCase {
         0x30, 0x5b, 0xea, 0xba, 0x2e, 0xda, 0x04, 0xdf, 0x99, 0x7b, 0x71, 0x4d, 0x6c, 0x6f, 0x2c, 0x29,
         0xa6, 0xad, 0x5c, 0xb4, 0x02, 0x2b, 0x02, 0x70, 0x9b]
     
-    func test4() {
+    func test4() throws {
         var t4 = plainText4
-        let aead = ChaChaPoly(key4, nonce4)
+        let aead = try ChaChaPoly(key4, nonce4)
         let tag = aead.encrypt(&t4, aad4)
         XCTAssertEqual(t4, cipherText4)
         XCTAssertEqual(tag, tag4)
@@ -174,13 +173,13 @@ class Test1: XCTestCase {
         XCTAssertEqual(t4, plainText4)
     }
 
-    func test5() {
+    func test5() throws {
         let key = Bytes(repeating: 17, count: 32)
         let nonce = Bytes(repeating: 5, count: 12)
         for i in 0 ..< 70 {
             let text = Bytes(repeating: 10, count: i)
             var x = text
-            let chacha = ChaChaPoly(key, nonce)
+            let chacha = try ChaChaPoly(key, nonce)
             let tag = chacha.encrypt(&x)
             let ok = chacha.decrypt(&x, tag)
             XCTAssertTrue(ok)

@@ -1,17 +1,25 @@
-<h2><b>Description</b></h2>
+<h2><b>SwiftChaChaPoly</b></h2>
+<h3><b>Contents:</b></h3>
+<ul>
+<li><a href="#use">Usage</a></li>
+<li><a href="#ex">Example</a></li>
+<li><a href="#comp">CryptoKit Compatibility</a></li>
+<li><a href="#perf">Performance</a></li>
+<li><a href="#dep">Dependencies</a></li>
+<li><a href="#ref">References</a></li>
+</ul>
 
-SwiftChaChaPoly is a Swift implementation of Authenticated Encryption with Associated Data.
-It is based on ChaCha20 encryption and Poly1305 authentication as defined in [RFC-7539].
-
+SwiftChaChaPoly implements Authenticated Encryption with Associated Data as defined in [RFC-8439].
+It is based on the ChaCha20 stream cipher and Poly1305 authentication.
 <h2><b>Usage</b></h2>
 In your project Package.swift file add a dependency like<br/>
 
 	  dependencies: [
-	  .package(url: "https://github.com/leif-ibsen/SwiftChaChaPoly", from: "1.1.0"),
+	  .package(url: "https://github.com/leif-ibsen/SwiftChaChaPoly", from: "2.0.0"),
 	  ]
 
-<h2><b>Example</b></h2>
-    // This example is from section 2.8.2 in [RFC-7539].
+<h2 id="ex"><b>Example</b></h2>
+    // This example is from section 2.8.2 in [RFC-8439].
 
     import SwiftChaChaPoly
 
@@ -26,7 +34,7 @@ In your project Package.swift file add a dependency like<br/>
 
     var bytes = Bytes(text.utf8)
 
-    let chacha = ChaChaPoly(key, nonce)
+    let chacha = try ChaChaPoly(key, nonce)
     let tag = chacha.encrypt(&bytes, aad)
     print(tag)
     let ok = chacha.decrypt(&bytes, tag, aad)
@@ -37,23 +45,78 @@ Giving
     [26, 225, 11, 89, 79, 9, 226, 106, 126, 144, 46, 203, 208, 96, 6, 145]
     Ok
 
-<h2><b>Performance</b></h2>
-The encryption and decryption speed was measured on a MacBook Pro 2018, 2,2 GHz 6-Core Intel Core i7. The results are:
+<h2 id="comp"><b>Compatibility with Apple's CryptoKit Framework</b></h2>
+SwiftChaChaPoly is compatible with CryptoKit as the following examples show:
+
+<h3><b>Example 1: SwiftChaChaPoly encrypts, CryptoKit opens</b></h3>
+    
+    import CryptoKit
+
+    let msg = Bytes("Hi, there".utf8)
+    let aad = Bytes("The AAD".utf8)
+
+    let key = Bytes(repeating: 7, count: 32)
+    let nonce = Bytes(repeating: 1, count: 12)
+
+    let chacha = try ChaChaPoly(key, nonce)
+    var ct = msg
+    let tag = chacha.encrypt(&ct, aad)
+    
+    // ct contains the ciphertext
+    
+    let ckKey = CryptoKit.SymmetricKey(data: key)
+    let ckNonce = try CryptoKit.ChaChaPoly.Nonce(data: nonce)
+    let sealedBox = try CryptoKit.ChaChaPoly.SealedBox(nonce: ckNonce, ciphertext: ct, tag: tag)
+    let pt = try CryptoKit.ChaChaPoly.open(sealedBox, using: ckKey, authenticating: aad)
+    print(String(bytes: pt, encoding: .utf8)!)
+
+giving:
+
+    Hi, there
+
+<h3><b>Example 2: CrypotoKit seals, SwiftChaChaPoly decrypts</b></h3>
+        
+    import CryptoKit
+
+    let msg = Bytes("Hi, there".utf8)
+    let aad = Bytes("The AAD".utf8)
+    
+    let ckKey = CryptoKit.SymmetricKey(size: .bits256)
+    let sealedBox = try CryptoKit.ChaChaPoly.seal(msg, using: ckKey, authenticating: aad)
+    
+    let key = ckKey.withUnsafeBytes {
+        return Bytes($0)
+    }
+    let nonce = Bytes(sealedBox.nonce)
+    let chacha = try ChaChaPoly(key, nonce)
+    var ct = Bytes(sealedBox.ciphertext)
+    
+    // ct contains the ciphertext
+    
+    let ok = chacha.decrypt(&ct, Bytes(sealedBox.tag), aad)
+    print(String(bytes: ct, encoding: .utf8)!)
+
+giving:
+
+    Hi, there
+
+<h2 id="perf"><b>Performance</b></h2>
+The encryption and decryption speed was measured on a iMac 2021, Apple M1 chip. The results are:
 <ul>
-<li>Encryption: 192 MBytes / sec (11 cycles / byte)</li>
-<li>Decryption: 213 MBytes / sec (10 cycles / byte)</li>
+<li>Encryption: 290 MBytes / sec (11 cycles / byte)</li>
+<li>Decryption: 290 MBytes / sec (11 cycles / byte)</li>
 </ul> 
 
-<h2><b>Dependencies</b></h2>
+<h2 id="dep"><b>Dependencies</b></h2>
 
 SwiftChaChaPoly requires Swift 5.0. It does not depend on other packages.
 
-<h2><b>References</b></h2>
+<h2 id="ref"><b>References</b></h2>
 
 Algorithms from the following papers have been used in the implementation.
 There are references in the source code where appropriate.
 
 <ul>
 <li>[FILIPPO] - Filippo Valsorda: A GO IMPLEMENTATION OF POLY1305 THAT MAKES SENSE, April 2019</li>
-<li>[RFC-7539] - ChaCha20 and Poly1305 for IETF Protocols, May 2015</li>
+<li>[RFC-8439] - ChaCha20 and Poly1305 for IETF Protocols, June 2018</li>
 </ul>

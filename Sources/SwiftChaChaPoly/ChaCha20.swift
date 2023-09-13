@@ -197,15 +197,17 @@ struct ChaCha20 {
             }
         }
         var j = 0
-        var counter = Word(0)
-        for i in 0 ..< text.count {
-            if i % 64 == 0 {
-                j = 0
-                counter += 1
-                blockFunction(&xor, counter)
+        var counter = Word(0)        
+        text.withUnsafeMutableBufferPointer { unsafetext in
+            for i in 0 ..< unsafetext.count {
+                if i % 64 == 0 {
+                    j = 0
+                    counter += 1
+                    blockFunction(&xor, counter)
+                }
+                unsafetext[i] ^= bytePtr[j]
+                j += 1
             }
-            text[i] ^= bytePtr[j]
-            j += 1
         }
     }
 
