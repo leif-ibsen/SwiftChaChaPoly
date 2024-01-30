@@ -5,7 +5,7 @@
 SwiftChaChaPoly is compatible with Apple's CryptoKit framework as the following examples show:
 
 ### Example 1: SwiftChaChaPoly encrypts, CryptoKit opens
-```Swift
+```swift
 import CryptoKit
 import SwiftChaChaPoly
 
@@ -28,11 +28,11 @@ let pt = try CryptoKit.ChaChaPoly.open(sealedBox, using: ckKey, authenticating: 
 print(String(bytes: pt, encoding: .utf8)!)
 ```
 giving:
-```Swift
+```swift
 Hi, there
 ```
 ### Example 2: CrypotoKit seals, SwiftChaChaPoly decrypts
-```Swift
+```swift
 import CryptoKit
 import SwiftChaChaPoly
 
@@ -55,6 +55,6 @@ let ok = chacha.decrypt(&ct, Bytes(sealedBox.tag), aad)
 print(String(bytes: ct, encoding: .utf8)!)
 ```
 giving:
-```Swift
+```swift
 Hi, there
 ```

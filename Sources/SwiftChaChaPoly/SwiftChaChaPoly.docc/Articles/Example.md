@@ -2,7 +2,7 @@
 
 ## 
 This example is from section 2.8.2 in [RFC-8439].
-```Swift
+```swift
 import SwiftChaChaPoly
 
 let key: Bytes = [
@@ -23,7 +23,7 @@ let ok = chacha.decrypt(&bytes, tag, aad)
 print(ok && bytes == Bytes(text.utf8) ? "Ok" : "Fail")
 ```
 Giving
-```Swift
+```swift
 [26, 225, 11, 89, 79, 9, 226, 106, 126, 144, 46, 203, 208, 96, 6, 145]
 Ok
 ```
