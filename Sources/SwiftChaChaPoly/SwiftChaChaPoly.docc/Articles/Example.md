@@ -1,7 +1,7 @@
 # Example
 
 ## 
-This example is from section 2.8.2 in [RFC-8439].
+This example is from section 2.8.2 in [RFC 8439].
 ```swift
 import SwiftChaChaPoly
 

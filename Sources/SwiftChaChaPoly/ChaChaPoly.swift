@@ -10,19 +10,17 @@ public typealias Byte = UInt8
 /// Array of unsigned 8 bit values
 public typealias Bytes = [UInt8]
 
-///
-/// A ChaChaPoly instance encrypts and decrypts data with authentication for a given key and nonce
-///
+/// The ChaChaPoly structure
 public struct ChaChaPoly {
     
     // MARK: Exceptions
 
     ///
-    /// ChaChaPoly Exceptions
+    /// ChaChaPoly exceptions
     ///
     public enum Ex: Error, CustomStringConvertible {
 
-        /// Textual description of *self*
+        /// Textual description of `self`
         public var description: String {
             switch self {
             case .keySize:
@@ -55,7 +53,7 @@ public struct ChaChaPoly {
     /// - Parameters:
     ///   - key: The key - a 32 byte value
     ///   - nonce: The nonce - a 12 byte value
-    /// - Throws: An exception if the key or nonce has wrong size
+    /// - Throws: An exception if `key` or `nonce` has wrong size
     public init(_ key: Bytes, _ nonce: Bytes) throws {
         guard key.count == 32 else {
             throw Ex.keySize
@@ -75,7 +73,7 @@ public struct ChaChaPoly {
     /// - Parameters:
     ///   - plaintext: The bytes to encrypt - it is replaced with the corresponding ciphertext of the same length
     ///   - aad: The additional authenticated data - the default value is an empty array
-    /// - Returns: The tag computed from *plaintext* and *aad* - a 16 byte value
+    /// - Returns: The tag computed from `plaintext` and `aad` - a 16 byte value
     public func encrypt(_ plaintext: inout Bytes, _ aad: Bytes = []) -> Bytes {
         let chacha = ChaCha20(self.key, self.nonce)
         chacha.encrypt(&plaintext)
@@ -96,10 +94,10 @@ public struct ChaChaPoly {
     /// Decrypts a byte array and verifies the tag
     ///
     /// - Parameters:
-    ///   - ciphertext: The bytes to decrypt - if *tag* is verified, it is replaced with the corresponding plaintext
-    ///   - tag: The tag to verify against *ciphertext* and *aad* - a 16 byte value
+    ///   - ciphertext: The bytes to decrypt - if `tag` is verified, it is replaced with the corresponding plaintext
+    ///   - tag: The tag to verify against `ciphertext` and `aad` - a 16 byte value
     ///   - aad: The additional authenticated data - the default value is an empty array
-    /// - Returns: *true* if *tag* is verified, else *false*
+    /// - Returns: `true` if `tag` is verified, else `false`
     public func decrypt(_ ciphertext: inout Bytes, _ tag: Bytes, _ aad: Bytes = []) -> Bool {
         let n = 16 * ((aad.count + 15) / 16)
         let m = 16 * ((ciphertext.count + 15) / 16)

@@ -4,7 +4,10 @@
 
 SwiftChaChaPoly is compatible with Apple's CryptoKit framework as the following examples show:
 
-### Example 1: SwiftChaChaPoly encrypts, CryptoKit opens
+### Example 1
+
+SwiftChaChaPoly encrypts, CryptoKit opens.
+
 ```swift
 import CryptoKit
 import SwiftChaChaPoly
@@ -31,7 +34,10 @@ giving:
 ```swift
 Hi, there
 ```
-### Example 2: CrypotoKit seals, SwiftChaChaPoly decrypts
+### Example 2
+
+CrypotoKit seals, SwiftChaChaPoly decrypts.
+
 ```swift
 import CryptoKit
 import SwiftChaChaPoly
