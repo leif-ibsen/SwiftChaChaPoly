@@ -5,4 +5,3 @@
 ### Properties
 
 - ``description``
-

@@ -1,8 +1,9 @@
 # CryptoKit Compatibility
 
+SwiftChaChaPoly is compatible with Apple's CryptoKit framework
+
 ## 
 
-SwiftChaChaPoly is compatible with Apple's CryptoKit framework as the following examples show:
 
 ### Example 1
 

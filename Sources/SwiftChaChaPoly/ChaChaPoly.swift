@@ -7,6 +7,7 @@
 
 /// Unsigned 8 bit value
 public typealias Byte = UInt8
+
 /// Array of unsigned 8 bit values
 public typealias Bytes = [UInt8]
 
@@ -15,9 +16,7 @@ public struct ChaChaPoly {
     
     // MARK: Exceptions
 
-    ///
-    /// ChaChaPoly exceptions
-    ///
+    /// The ChaChaPoly exceptions
     public enum Ex: Error, CustomStringConvertible {
 
         /// Textual description of `self`
